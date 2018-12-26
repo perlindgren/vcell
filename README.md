@@ -3,10 +3,14 @@
 
 # `vcell`
 
-> Just like [`Cell`] but with [volatile] read / write operations
+Just like [`Cell`] but with [volatile] read / write operations. From version 0.2.0 `vcell` has a `klee-analysis` feature which allows embedde applications to be analysed using [`cargo-klee`], with the following semantics:
+
+* `fn get(&self) -> T` will return a new (fresh) symbolic value
+* `fn set(&self, _value: T)` will have no side effect
 
 [`Cell`]: https://doc.rust-lang.org/std/cell/struct.Cell.html
 [volatile]: https://doc.rust-lang.org/std/ptr/fn.read_volatile.html
+[`cargo-klee`]: https://gitlab.henriktjader.com/pln/cargo-klee.git
 
 # License
 
