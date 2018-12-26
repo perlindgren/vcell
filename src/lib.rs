@@ -4,7 +4,7 @@
 //! [volatile]: https://doc.rust-lang.org/std/ptr/fn.read_volatile.html
 
 #![deny(missing_docs)]
-#![deny(warnings)]
+// #![deny(warnings)]
 #![cfg_attr(feature = "const-fn", feature(const_fn))]
 #![no_std]
 
@@ -13,7 +13,13 @@ use core::cell::UnsafeCell;
 use core::ptr;
 
 #[cfg(feature = "klee-analysis")]
-#[macro_use]
+extern crate cstr_core;
+
+#[cfg(feature = "klee-analysis")]
+extern crate heapless;
+
+#[cfg(feature = "klee-analysis")]
+// #[macro_use]
 extern crate klee;
 
 /// Just like [`Cell`] but with [volatile] read / write operations
@@ -52,8 +58,16 @@ impl<T> VolatileCell<T> {
     where
         T: Copy,
     {
+        use cstr_core::CStr;
+        use heapless::consts::U16;
+        use heapless::String;
+
+        let mut address: String<U16> = String::new();
+        let _ = core::fmt::write(&mut address, format_args!("{:x?}\0", &self as *const _));
+        let s = unsafe { CStr::from_bytes_with_nul_unchecked(address.as_bytes()) };
+
         let mut symbolic_value: T = unsafe { core::mem::uninitialized() };
-        ksymbol!(&mut symbolic_value, "vcell");
+        klee::kmksymbol(&mut symbolic_value, s);
         symbolic_value
     }
 
