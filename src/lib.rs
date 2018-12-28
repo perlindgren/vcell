@@ -4,7 +4,7 @@
 //! [volatile]: https://doc.rust-lang.org/std/ptr/fn.read_volatile.html
 
 #![deny(missing_docs)]
-// #![deny(warnings)]
+#![deny(warnings)]
 #![cfg_attr(feature = "const-fn", feature(const_fn))]
 #![no_std]
 
@@ -13,17 +13,8 @@ use core::cell::UnsafeCell;
 use core::ptr;
 
 #[cfg(feature = "klee-analysis")]
-extern crate cstr_core;
-
-#[cfg(feature = "klee-analysis")]
-extern crate heapless;
-
-#[cfg(feature = "klee-analysis")]
 #[macro_use]
 extern crate klee;
-
-#[cfg(feature = "klee-analysis")]
-mod alloc;
 
 /// Just like [`Cell`] but with [volatile] read / write operations
 ///
@@ -61,32 +52,9 @@ impl<T> VolatileCell<T> {
     where
         T: Copy,
     {
-        //use alloc::*;
-        use cstr_core::CStr;
-        use heapless::consts::U16;
-        use heapless::String;
-
-        // panic!();
-
-        let mut address: String<U16> = String::new();
-        //let _ = core::fmt::write(&mut address, format_args!("{:x?}\0", &self as *const _));
-        address.push_str("abc\0").unwrap();
-        assert! { address.len() == 4};
-
-        let a = alloc::static_bytes(address.as_bytes());
-        assert! { a == "abc\0".as_bytes() };
-        assert! { alloc::start() == 4 as usize };
-
-        let s = CStr::from_bytes_with_nul(a).unwrap();
-        //assert! { &a as *const _ == s as *const _ };
-        //klee::abort();
-        // let s1 = &CStr::from_bytes_with_nul("abc\0".as_bytes()).unwrap();
-        // assert! { *s == *s1 };
-        // let s2: &'static str = concat!("a", "\0");
-        // let s3 = &CStr::from_bytes_with_nul(s2.as_bytes()).unwrap();
         let mut symbolic_value: T = unsafe { core::mem::uninitialized() };
-        klee::kmksymbol(&mut symbolic_value, s);
-        //ksymbol!(&mut symbolic_value, "plepps");
+
+        ksymbol!(&mut symbolic_value, "vcell");
         symbolic_value
     }
 

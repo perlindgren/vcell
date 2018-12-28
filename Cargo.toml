@@ -8,10 +8,6 @@ name = "vcell"
 repository = "https://github.com/japaric/vcell"
 version = "0.2.0"
 
-[dependencies]
-heapless = "0.4.1"
-cstr_core = "0.1.2"
-
 [dependencies.klee]
 version = "0.2.0"
 git = "https://gitlab.henriktjader.com/pln/cargo-klee.git"
