@@ -14,7 +14,7 @@ use core::ptr;
 
 #[cfg(feature = "klee-analysis")]
 #[macro_use]
-extern crate klee;
+extern crate klee_sys;
 
 /// Just like [`Cell`] but with [volatile] read / write operations
 ///
@@ -27,19 +27,7 @@ pub struct VolatileCell<T> {
 
 impl<T> VolatileCell<T> {
     /// Creates a new `VolatileCell` containing the given value
-    #[cfg(feature = "const-fn")]
     pub const fn new(value: T) -> Self {
-        VolatileCell {
-            value: UnsafeCell::new(value),
-        }
-    }
-
-    /// Creates a new `VolatileCell` containing the given value
-    ///
-    /// NOTE A `const fn` variant is available under the "const-fn" Cargo
-    /// feature
-    #[cfg(not(feature = "const-fn"))]
-    pub fn new(value: T) -> Self {
         VolatileCell {
             value: UnsafeCell::new(value),
         }
@@ -52,10 +40,10 @@ impl<T> VolatileCell<T> {
     where
         T: Copy,
     {
-        let mut symbolic_value: T = unsafe { core::mem::uninitialized() };
+        let mut symbolic_value: core::mem::MaybeUninit<T> = core::mem::MaybeUninit::uninit();
 
-        ksymbol!(&mut symbolic_value, "vcell");
-        symbolic_value
+        klee_make_symbolic!(&mut symbolic_value, "vcell");
+        unsafe { symbolic_value.assume_init() }
     }
 
     #[cfg(not(feature = "klee-analysis"))]
@@ -69,7 +57,7 @@ impl<T> VolatileCell<T> {
     }
 
     #[cfg(feature = "klee-analysis")]
-    /// Writing has no side effect
+    /// Writing has no side effect, could be dangerous as pointing to some HW mem location
     #[inline(always)]
     pub fn set(&self, _value: T)
     where

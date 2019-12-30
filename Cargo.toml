@@ -6,13 +6,13 @@ keywords = ["no-std", "volatile", "cell"]
 license = "MIT OR Apache-2.0"
 name = "vcell"
 repository = "https://github.com/japaric/vcell"
-version = "0.2.0"
+version = "0.1.2"
 
-[dependencies.klee]
-version = "0.2.0"
-git = "https://gitlab.henriktjader.com/pln/cargo-klee.git"
+[dependencies.klee-sys]
+version = "0.1.0"
+git = "https://gitlab.henriktjader.com/pln/klee-sys.git"
 optional = true
 
 [features]
 const-fn = []
-klee-analysis = ["klee", "klee/klee-analysis"]
+klee-analysis = ["klee-sys", "klee-sys/klee-analysis"]
