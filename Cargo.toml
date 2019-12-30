@@ -15,4 +15,4 @@ optional = true
 
 [features]
 const-fn = []
-klee-analysis = ["klee-sys", "klee-sys/klee-analysis"]
+klee-analysis = [ "klee-sys" ]
