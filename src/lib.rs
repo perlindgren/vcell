@@ -40,10 +40,10 @@ impl<T> VolatileCell<T> {
     where
         T: Copy,
     {
-        let mut symbolic_value: core::mem::MaybeUninit<T> = core::mem::MaybeUninit::uninit();
+        let mut symbolic_value = unsafe { core::mem::MaybeUninit::uninit().assume_init() };
 
         klee_make_symbolic!(&mut symbolic_value, "vcell");
-        unsafe { symbolic_value.assume_init() }
+        symbolic_value
     }
 
     #[cfg(not(feature = "klee-analysis"))]
