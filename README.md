@@ -9,7 +9,7 @@ Just like [`Cell`] but with [volatile] read / write operations. This version (0.
 [volatile]: https://doc.rust-lang.org/std/ptr/fn.read_volatile.html
 [`klee-sys`]: https://gitlab.henriktjader.com/pln/klee-sys.git
 
-# License
+## License
 
-Copyright Per Lindgen <per.lindgren@ltu.se>
+All changes to the original files, copyright Per Lindgen <per.lindgren@ltu.se>
 All rights reserved.

@@ -9,7 +9,7 @@ repository = "https://github.com/japaric/vcell"
 version = "0.1.2"
 
 [dependencies.klee-sys]
-version = "0.1.0"
+version = "0.2.0"
 git = "https://gitlab.henriktjader.com/pln/klee-sys.git"
 optional = true
 
